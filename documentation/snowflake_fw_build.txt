@@ -1,0 +1,122 @@
+
+Building the Snowflake Firmware and Burning it onto Snowflake Board
+
+1. Warranty
+
+THE SOFTWARE ENCLODED IS PROVIDED "AS-IS", WITHOUT WARRANTY OF ANY KIND
+(EITHER EXPRESS OR IMPLIED), INCLUDING BUT NOT LIMITED TO ANY IMPLIED
+WARRANTIES OF MERCHANTABILITY OF FITNESS FOR A SPECIFIC OR GENERAL
+PURPOSE.
+
+
+2. Arduino Installation
+
+This software can be compiled inside the standard Arduino
+environment. It has been successfully tested with Arduino 1.8.9 and 1.8.8,
+both on Linux.  Arduino version 1.8.10 does *NOT* work, and is not
+recommended.
+
+Install the Arduino Software as you normally would for your platform.
+
+3. Modifying boards.txt
+
+The Atmega on the snowflake operates at 8 MHz and without the use
+of external clock crystals. There are no standard Arduino boards 
+in the standard boards.txt that describe such a board, so you need to
+add it.
+
+The following lines, added to boards.txt, will suffice:
+
+---- CUT HERE ----
+## RAW 328p internal clock 
+## ---------------------------------------------------
+pro.menu.cpu.8MHzatmega328int =ATmega328P 3.3V 8 MHz INTERNAL OSC
+pro.menu.cpu.8MHzatmega328int.upload.maximum_size=30720
+pro.menu.cpu.8MHzatmega328int.upload.maximum_data_size=2048
+pro.menu.cpu.8MHzatmega328int.upload.speed=57600
+pro.menu.cpu.8MHzatmega328int.bootloader.low_fuses=0xE2
+pro.menu.cpu.8MHzatmega328int.bootloader.high_fuses=0xD8
+pro.menu.cpu.8MHzatmega328int.bootloader.extended_fuses=0xFF
+pro.menu.cpu.8MHzatmega328int.bootloader.file=atmega/ATmegaBOOT_168_atmega328_pro_8MHz.hex
+pro.menu.cpu.8MHzatmega328int.build.mcu=atmega328p
+pro.menu.cpu.8MHzatmega328int.build.f_cpu=8000000L
+---- CUT HERE ----
+
+These lines should be added to:
+
+<install_location>/arduino/avr/boards.txt
+
+or, if you have updated your boards package in the IDE, the right
+file might be in:
+
+<home_directory>/.arduino15/packages/arduino/hardware/avr/<version>/boards.txt
+
+After you have made the changes, save the file and restart the Arduino
+IDE
+
+
+4. Installing IRLib2 Library
+
+This code makes use of the IRLib2 library, found here: 
+
+https://github.com/cyborg5/IRLib2
+
+You can download the entire library and put it into your
+sketchbook/libraries folder. Be sure to follow the advice in their
+instructions that each sublibrary be installed at the top level of your
+libraries folder.
+
+5. Installing the sketch
+
+The sketch is provided in a zipfile enclosed. Unzip it into your
+sketchbook folder. You then should be able to open it directly in the
+Arduino IDE
+
+6. Choosing the Board
+
+Within the Arduino IDE, choose Tools => Board, and choose "Arduino Pro
+or Pro Mini".
+
+Then, choose Tools => Processor and choose "3.3V 8MHz INTERNAL CLOCK".
+
+If the "INTERNAL CLOCK" option is not there, you did not edit your
+boards.txt, or you edited the wrong one. Find the right file, make the
+changes and restart the Arduino IDE
+
+7. Compilation
+
+At this point clicking the "check mark" should allow the sketch to
+compile without errors.
+
+8. Burning Bootloader
+
+To get the correct fuse values for the Atmega to run without a crystal,
+you should burn the bootloader.
+
+You will have to do this using an ICSP device programmer.  Each programmer
+has slightly different instructions. I can't explain them all, but
+basically, you select you programmer and then choose "Tools => Burn
+Bootloader".
+
+8. Upload
+
+If you successfully burned the bootloader, you can upload the sketch
+in the normal manner using a serial cable attached to JSRL.  However,
+since you have the ICSP programmer out and in use, it's just as easy to
+choose "Sketch => Upload Using Programmer" to upload the sketch.
+
+9. Burning many boards
+
+If you have to program many boards, you may find it more convenient to
+use a simple script to do so. I have provided such a script for linuex
+(flash.sh). First, use the IDE and choose "Sketch => Export Compiled
+Binary". This will create two .hex files in the sketch folder. Then run
+flash.sh to write those files to your boards. The script also sets the
+appropriate fuses for internal oscillator at 8MHz. The script works with
+the USBtiny programmer, but you can adapt it for other programmers.
+
+
+
+
+
+

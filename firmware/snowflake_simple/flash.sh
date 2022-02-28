@@ -15,7 +15,7 @@ then
     avrdude \
         -p m328p \
         -c usbtiny \
-        -U flash:w:./sbe_snowflake.ino.with_bootloader.eightanaloginputs.hex:i \
+        -U flash:w:./snowflake_simple.ino.with_bootloader.eightanaloginputs.hex:i \
         -U lfuse:w:0xe2:m \
         -U hfuse:w:0xd8:m \
         -U efuse:w:0xff:m \
@@ -26,6 +26,6 @@ else
         -p m328p \
         -c usbtiny \
         -U lfuse:w:0xe2:m \ # set to 8 MHz
-        -U sbe_snowflake.ino.hex
+        -U snowflake_simple.ino.hex
 fi
 
